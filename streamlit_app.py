@@ -82,7 +82,7 @@ X, Y = emission_array.get_plotting_axes()
 lum_dist = disk.lum_dist
 approx_ab_mag = round(-2.5 * np.log10(total_flux / (4 * np.pi * lum_dist**2) * delta_lam / delta_freq * 1000) - 48.6, 1)
 
-title_string = "total emitted flux: "+str(total_flux)[:4]+"e"+str(flux_exp)[:-2]+" W/m"+r", AB mag $\approx$"+str(approx_ab_mag)
+title_string = "emitted flux density: "+str(total_flux)[:4]+"e"+str(flux_exp)[:-2]+" W/m"+r", AB mag $\approx$"+str(approx_ab_mag)
 
 fig, ax = plt.subplots(figsize=(8, 6))
 contours = ax.contourf(X, Y, (flux_array), 50)
