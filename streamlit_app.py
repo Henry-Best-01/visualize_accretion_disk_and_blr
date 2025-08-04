@@ -15,8 +15,10 @@ from astropy.io import fits
 path_to_raytraces = "data/"
 
 st.title("The Accretion Disk")
-st.write("This is a toy GUI designed to explore how the flux distribution of the accretion disk is related to various parameters")
-
+st.write("This is a toy GUI designed to explore how the flux distribution of the accretion disk and broad line region is related to various parameters.")
+st.write("The accretion disk model stems from the Novikov-Thorne thin-disk model with general relatvisitc corrections.")
+st.write("Additions to this model are the lamp-post heating term as outlined in Cackett et al. 2007 and the Disk-wind term from Yong et al. 2019.")
+st.write("Computations are done using Amoeba as described in Best et al. 2025 and ray tracing is computed with Sim5 as described in Bursa 2017.")
 left_col, right_col = st.columns(2)
 
 mexp = left_col.slider("mass exponent", min_value=6.0, max_value=10.0, step=0.1, value=8.0)
@@ -170,4 +172,28 @@ for axis in ax4:
     axis.set_aspect(1)
 
 st.write(fig4)
-    
+
+st.title("Accretion disk params")
+st.write("The sliders provided represent physical parameters of the active galactic nucleus.")
+st.write(r"The mass exponent is related to the physical mass of the central supermassive black hole as mass_exp = log$_{10}(M_{\bullet}/M_{\odot})$. This also defines the size scale--the gravitational radius $r_{\rm{g}} = GM_{\bullet}c^{-2}$.")  
+st.write("The inclination angle represents the observer's position with respect to the axis of symmetry. Zero degrees is face-on, while ninety degrees is edge-on.")
+st.write("The Eddington ratio is related to how much matter is drawn into the supermassive black hole in terms of the Eddington limit. The Eddington limit is the amount of matter required to balance the gravitational force with radiation pressure in a system with zero angular momentum. Thin disks are not effective above ~0.3 Eddington ratio, where other accretion modes are required to affectively accrete material.")
+st.write("The redshift of the system represents the physical distance. This impacts everything from the wavelengths observed to its relative intensity. Within this model, the Flat Lambda-CDM Universe is assumed with H0 = 70 km/s/Mpc, Omega_M = 0.3, Omega_0 = 0.7.")
+
+st.write("The wind strength parameter represents how much material from the accretion disk is 'blown off' the accretion disk as it moves inwards to the black hole. Zero represents no material is removed, while 0.8 represents 80 percent of the material is removed every 6 $r_{\rm{g}}$.")
+st.write("Axis range simply controls the zoom of the plots in the accretion disk section in units of $r_{\rm{g}}$.")
+st.write("The 'apply GR' toggle allows you to switch between natively calculated accretion disks and those computed with GR corrections. Most prominent effects are the light bending over the black hole and the relativistic Doppler boosting of the approaching side (left) for high inclinations. The GR effects introduce redshift and blueshift to the accretion disk depending on line-of-sight velocities.")
+st.write("The observer frame wavelength range represents the wavelengths an observer sees. Amoeba is designed for optical, ultra-violet, and infrared emission. Redshifting of the filter range is applied and an estimate of the AB-magnitude are related to this range.")
+
+st.title("Broad line region params")
+st.write("Wind radius represents the base of where the BLR wind is launched from. Amoeba assumes a biconical outflow for some region of the accretion disk. Note that not all regions contained within this wind radius need to be at the proper ionization state to emit the simulated emission line (see optimal blr emission radius).")
+st.write("inner/outer characteristic distance represent the poloidal distance at which the velocity accelerates to the asymptotic velocity. After one characteristic distance, the wind will be outflowing poloidally at 0.5 * asymptotic velocity. ")
+st.write("innner/outer asymptotic velocity represents the maximum outflowing velocity as the poloidal distance extends towards infinity.")
+st.write("optimal BLR emission radius is a proxy for the ideal emission region of the BLR. Closer than this region, it is assumed that the simulated emission species will be completely ionized. Further out, it is not likely for these species to emit their emission line efficiently.")
+st.write("optimal BLR emission radius represents how wide this optimal emission region is. This current model is a radial Gaussian, and in practice the emission efficiency should be calculated with a photoionization code.")
+st.write("launch angles represent the inner and outer angles of the BLR biconical geometry, in degrees. Zero degrees represents normal to the accretion disk, while ninety degrees represents traveling along the surface of the accretion disk.")
+st.write("rest frame emission line represents the wavelength of the BLR if it wasn't moving and was here next to the observer. This may be tied to realistic emission lines, and the emission will then be transformed into the observer frame's reference. This effectively allows a calculation of the line shape as you change the filter, but is not included in this app because it will have to compute all wavelengths every time something is changed.")
+
+
+
+
