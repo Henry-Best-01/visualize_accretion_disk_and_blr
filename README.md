@@ -1,6 +1,4 @@
-# :earth_americas: GDP dashboard template
-
-A simple Streamlit app showing the GDP of different countries in the world.
+A simple Streamlit app showing how Amoeba can produce flux distributions of the active galactic nuclei (AGN) accretion disk and broad line region (BLR). Various sliders control the typical accretion disk parameters and our viewing conditions. Applying the "GR" toggle will apply relativistic corrections via pre-calculated raytraces computed using Sim5. 
 
 [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://gdp-dashboard-template.streamlit.app/)
 
@@ -15,5 +13,5 @@ A simple Streamlit app showing the GDP of different countries in the world.
 2. Run the app
 
    ```
-   $ streamlit run streamlit_app.py
+   $ streamlit run visualize_AD_and_BLR.py
    ```

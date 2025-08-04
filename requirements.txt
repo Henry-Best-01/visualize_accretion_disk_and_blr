@@ -1,2 +1,5 @@
 streamlit
-pandas
+amoeba-agn
+astropy
+matplotlib
+numpy
