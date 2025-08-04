@@ -9,7 +9,6 @@ from amoeba.Util.util import (
 )
 import matplotlib.pyplot as plt
 import streamlit as st
-import glob
 from astropy.io import fits
 
 
@@ -103,9 +102,6 @@ ax2.set_xlabel(r"x [$r_{\rm{g}}$]")
 ax2.set_ylabel(r"flux density across center [W/m$^{2}$/m]")
 
 st.write(fig2)
-
-
-
 
 
 st.title("The BLR")
