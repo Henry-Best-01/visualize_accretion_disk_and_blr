@@ -10,6 +10,7 @@ from amoeba.Util.util import (
 import matplotlib.pyplot as plt
 import streamlit as st
 from astropy.io import fits
+from pandas import DataFrame as df
 
 
 path_to_raytraces = "data/"
@@ -105,6 +106,14 @@ ax2.set_ylabel(r"flux density across center [W/m$^{2}$/m]")
 
 st.write(fig2)
 
+@st.fragment()
+def save_data(current_data, my_key):
+    file_name = st.text_input("Type output file name below", value="output.csv", key=my_key)
+    output_data = df(current_data).to_csv().encode("utf-8")
+    st.download_button("Download "+my_key+" flux distribution", output_data, file_name, key=my_key+" button")
+
+save_data(flux_array, my_key="accretion disk")
+
 
 st.title("The BLR")
 
@@ -150,6 +159,8 @@ ax3.set_aspect(1)
 st.write(fig3)
 
 st.write("Note that this figure may appear blank if the emission line does not project into your range of wavelengths.")
+
+save_data(blr_flux, my_key="broad line region")
 
 st.write("Here are the relevant R-Z projections of the density and poloidal velocities")
 
