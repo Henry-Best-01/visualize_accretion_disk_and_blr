@@ -16,10 +16,18 @@ from pandas import DataFrame as df
 path_to_raytraces = "data/"
 
 st.title("The Accretion Disk")
-st.write("This is a toy GUI designed to explore how the flux distribution of the accretion disk and broad line region is related to various parameters.")
-st.write("The accretion disk model stems from the Novikov-Thorne thin-disk model with general relatvisitc corrections.")
+st.write("This is a toy GUI which uses Amoeba as described in Best et al. 2025, designed to explore how the flux distribution of the accretion disk and broad line region (BLR) is related to various parameters.")
+st.write("The accretion disk model stems from the Shakura-Sunyaev thin-disk model which includes general relatvisitc (GR) corrections.")
 st.write("Additions to this model are the lamp-post heating term as outlined in Cackett et al. 2007 and the Disk-wind term from Yong et al. 2019.")
-st.write("Computations are done using Amoeba as described in Best et al. 2025 and ray tracing is computed with Sim5 as described in Bursa 2017.")
+st.write("GR ray tracing is computed with Sim5 as described in Bursa 2017.")
+col_stack = st.columns(5)
+col_stack[0].link_button("Best et al., 2025", "https://ui.adsabs.harvard.edu/abs/2025MNRAS.539.1269B/abstract")
+col_stack[1].link_button("Shakura + Sunyaev, 1973", "https://ui.adsabs.harvard.edu/abs/1973A%26A....24..337S/abstract")
+col_stack[2].link_button("Cackett et al., 2007", "https://ui.adsabs.harvard.edu/abs/2007MNRAS.380..669C/abstract")
+col_stack[3].link_button("Yong et al., 2019", "https://ui.adsabs.harvard.edu/abs/2017PASA...34...42Y/abstract")
+col_stack[4].link_button("Bursa, 2017", "https://ui.adsabs.harvard.edu/abs/2017bhns.work....7B/abstract")
+
+
 left_col, right_col = st.columns(2)
 
 mexp = left_col.slider("mass exponent", min_value=6.0, max_value=10.0, step=0.1, value=8.0)
@@ -57,7 +65,7 @@ acc_disk_dict = create_maps(
     inclination_angle=inclination,
     resolution=np.size(r_map, 0),
     eddington_ratio=edd_ratio,
-    visc_temp_prof="SS",
+    visc_temp_prof="NT",
     temp_beta=wind_beta
 )
 
@@ -67,7 +75,7 @@ if apply_gr:
     acc_disk_dict['phi_array'] = phi_map
     acc_disk_dict['g_array'] = g_map
     grav_rad = calculate_gravitational_radius(10**mexp)
-    t_map = accretion_disk_temperature(r_map * grav_rad, 6.0 * grav_rad, 10**mexp, edd_ratio, beta=wind_beta)
+    t_map = accretion_disk_temperature(r_map * grav_rad, 6.0 * grav_rad, 10**mexp, edd_ratio, beta=wind_beta, visc_temp_prof="NT")
     acc_disk_dict['temp_array'] = t_map
 
 
@@ -107,12 +115,16 @@ ax2.set_ylabel(r"flux density across center [W/m$^{2}$/m]")
 st.write(fig2)
 
 @st.fragment()
-def save_data(current_data, my_key):
+def save_data(current_data, current_metadata, my_key):
     file_name = st.text_input("Type output file name below", value="output.csv", key=my_key)
+    metadata_file_name = file_name[:file_name.find(".")]+"_metadata.txt"
     output_data = df(current_data).to_csv().encode("utf-8")
     st.download_button("Download "+my_key+" flux distribution", output_data, file_name, key=my_key+" button")
+    st.download_button("Download "+my_key+" metadata", current_metadata, metadata_file_name, key=my_key+" metadata button")
 
-save_data(flux_array, my_key="accretion disk")
+current_metadata = "Refer to this file for further information \n"+f"axis_range: (-1000, 1000) \n"+f"mass_exponent: {mexp} \n"+f"redshift: {redshift} \n"+f"inclination: {inclination} \n"+f"eddington_ratio: {edd_ratio} \n"+f"with GR: {apply_gr} \n"+f"wavelength range: {wavelength}"               
+
+save_data(flux_array, current_metadata, my_key="accretion disk")
 
 
 st.title("The BLR")
@@ -160,7 +172,9 @@ st.write(fig3)
 
 st.write("Note that this figure may appear blank if the emission line does not project into your range of wavelengths.")
 
-save_data(blr_flux, my_key="broad line region")
+current_metadata = "Refer to this file for further information \n"+f"x_axis_range: ({np.min(X)}, {np.max(X)}) \n"+f"y_axis_range: ({np.min(Y)}, {np.max(Y)}) \n"+f"mass_exponent: {mexp} \n"+f"redshift: {redshift} \n"+f"inclination: {inclination} \n"+f"wavelength range: {wavelength} \n"+f"wind launching radii: {blr_radii} \n"+f"wind launching angles: {blr_angles} \n"+f"inner characteristic distance: {blr_characteristic_distance_1} \n"+f"outer characteristic distance: {blr_characteristic_distance_2} \n"+f"inner asymptotic velocity: {asympt_vel_1} \n"+f"outer asymptotic velocity: {asympt_vel_2} \n"+f"optimal BLR emission radius: {blr_opt_radius} \n"+f"BLR emission width: {blr_opt_width} \n"+f"rest frame wavelength: {emitted_wavelength}"
+
+save_data(blr_flux, current_metadata, my_key="broad line region")
 
 st.write("Here are the relevant R-Z projections of the density and poloidal velocities")
 
@@ -192,7 +206,7 @@ st.write("The Eddington ratio is related to how much matter is drawn into the su
 st.write("The redshift of the system represents the physical distance. This impacts everything from the wavelengths observed to its relative intensity. Within this model, the Flat Lambda-CDM Universe is assumed with H0 = 70 km/s/Mpc, Omega_M = 0.3, Omega_0 = 0.7.")
 
 st.write("The wind strength parameter represents how much material from the accretion disk is 'blown off' the accretion disk as it moves inwards to the black hole. Zero represents no material is removed, while 0.8 represents 80 percent of the material is removed every 6 $r_{\rm{g}}$.")
-st.write("Axis range simply controls the zoom of the plots in the accretion disk section in units of $r_{\rm{g}}$.")
+st.write(r"Axis range simply controls the zoom of the plots in the accretion disk section in units of $r_{\rm{g}}$.")
 st.write("The 'apply GR' toggle allows you to switch between natively calculated accretion disks and those computed with GR corrections. Most prominent effects are the light bending over the black hole and the relativistic Doppler boosting of the approaching side (left) for high inclinations. The GR effects introduce redshift and blueshift to the accretion disk depending on line-of-sight velocities.")
 st.write("The observer frame wavelength range represents the wavelengths an observer sees. Amoeba is designed for optical, ultra-violet, and infrared emission. Redshifting of the filter range is applied and an estimate of the AB-magnitude are related to this range.")
 
