@@ -1,6 +1,6 @@
 A simple Streamlit app showing how Amoeba can produce flux distributions of the active galactic nuclei (AGN) accretion disk and broad line region (BLR). Various sliders control the typical accretion disk parameters and our viewing conditions. Applying the "GR" toggle will apply relativistic corrections via pre-calculated raytraces computed using Sim5. 
 
-[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://gdp-dashboard-template.streamlit.app/)
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://visualizeaccretiondiskandblr.streamlit.app/)
 
 ### How to run it on your own machine
 
