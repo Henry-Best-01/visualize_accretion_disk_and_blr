@@ -13,7 +13,7 @@ A simple Streamlit app showing how Amoeba can produce flux distributions of the 
 2. Run the app
 
    ```
-   $ streamlit run visualize_AD_and_BLR.py
+   $ streamlit run streamlit_app.py
    ```
 
 ### How to expand this script to include more inclination angles (requires ~2.4 GiB storage on local device for pre-computed GR ray trace files)
